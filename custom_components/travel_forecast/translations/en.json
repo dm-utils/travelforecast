@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a route",
+        "data": {
+          "name": "Name",
+          "origin": "Origin address",
+          "destination": "Destination address",
+          "api_key": "TomTom API key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "TomTom rejected the API key (or a required product isn't enabled on it yet)",
+      "address_not_found": "Could not find one of the addresses",
+      "cannot_connect": "Could not reach TomTom"
+    },
+    "abort": {
+      "already_configured": "This route is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "refresh_interval_hours": "Refresh interval (hours)"
+        }
+      }
+    }
+  }
+}

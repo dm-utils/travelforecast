@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Route toevoegen",
+        "data": {
+          "name": "Naam",
+          "origin": "Beginadres",
+          "destination": "Eindadres",
+          "api_key": "TomTom API-key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "TomTom wees de API-key af (of een vereist product staat er nog niet op aan)",
+      "address_not_found": "Een van de adressen kon niet gevonden worden",
+      "cannot_connect": "Kon TomTom niet bereiken"
+    },
+    "abort": {
+      "already_configured": "Deze route is al geconfigureerd"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "refresh_interval_hours": "Ververs-interval (uren)"
+        }
+      }
+    }
+  }
+}

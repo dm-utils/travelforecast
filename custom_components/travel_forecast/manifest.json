@@ -1,0 +1,11 @@
+{
+  "domain": "travel_forecast",
+  "name": "Travel Forecast",
+  "codeowners": ["@ST33F"],
+  "config_flow": true,
+  "documentation": "https://github.com/dm-utils/travelforecast",
+  "issue_tracker": "https://github.com/dm-utils/travelforecast/issues",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "0.1.0"
+}
