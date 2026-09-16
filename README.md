@@ -10,8 +10,19 @@ Uses the [TomTom Routing API](https://developer.tomtom.com/routing-api)
 a `best_departure` sensor that surfaces the cheapest travel-time window in
 that curve.
 
-Status: early development, not yet installable. See
+Status: v1 working, verified end to end on a real Home Assistant OS
+install — real route showed 224 min at 10:00, peaking at 242 min around
+17:00 rush hour, down to 200 min overnight. Not yet packaged for HACS
+install (manual copy into `custom_components/` for now). See
 [DESIGN.md](DESIGN.md) for the implementation plan.
+
+## Installation (manual, pre-HACS)
+
+Copy `custom_components/travel_forecast/` into your Home Assistant
+`config/custom_components/` directory, restart Home Assistant, then add
+it via Settings → Devices & services → Add integration → Travel Forecast.
+You'll need a free [TomTom API key](https://developer.tomtom.com) with
+the Geocoding and Routing APIs enabled.
 
 ## License
 

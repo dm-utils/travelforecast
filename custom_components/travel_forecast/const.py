@@ -23,5 +23,7 @@ ATTR_BEST_DURATION_MIN = "best_duration_min"
 TOMTOM_GEOCODE_URL = "https://api.tomtom.com/search/2/geocode/{query}.json"
 TOMTOM_ROUTE_URL = "https://api.tomtom.com/routing/1/calculateRoute/{origin}:{destination}/json"
 
-# Cap concurrent TomTom requests per refresh so we don't burst the free tier.
-MAX_CONCURRENT_REQUESTS = 5
+# TomTom's free tier throttles bursts (confirmed via a live 429 while testing
+# the config flow, which fired 48 near-simultaneous requests). Fetch the
+# forecast sequentially with a small pause between requests instead.
+REQUEST_DELAY_SECONDS = 0.3

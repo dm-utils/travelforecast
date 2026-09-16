@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -22,6 +23,8 @@ from .const import (
     DEFAULT_REFRESH_INTERVAL_HOURS,
     DOMAIN,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 STEP_USER_SCHEMA = vol.Schema(
     {
@@ -48,11 +51,14 @@ class TravelForecastConfigFlow(ConfigFlow, domain=DOMAIN):
                 destination = await async_geocode(
                     session, user_input[CONF_DESTINATION], user_input[CONF_API_KEY]
                 )
-            except TomTomAuthError:
+            except TomTomAuthError as err:
+                _LOGGER.warning("TomTom auth error during config flow: %s", err)
                 errors["base"] = "invalid_auth"
-            except ValueError:
+            except ValueError as err:
+                _LOGGER.warning("TomTom geocode error during config flow: %s", err)
                 errors["base"] = "address_not_found"
             except Exception:  # noqa: BLE001 - surfaced to the user as a generic error
+                _LOGGER.exception("Unexpected error during config flow")
                 errors["base"] = "cannot_connect"
             else:
                 await self.async_set_unique_id(

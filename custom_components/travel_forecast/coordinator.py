@@ -22,7 +22,7 @@ from .const import (
     DEFAULT_REFRESH_INTERVAL_HOURS,
     DOMAIN,
     HORIZON_HOURS,
-    MAX_CONCURRENT_REQUESTS,
+    REQUEST_DELAY_SECONDS,
 )
 from homeassistant.const import CONF_API_KEY
 
@@ -45,7 +45,6 @@ class TravelForecastCoordinator(DataUpdateCoordinator[list[ForecastPoint]]):
         self.origin = (entry.data[CONF_ORIGIN_LAT], entry.data[CONF_ORIGIN_LON])
         self.destination = (entry.data[CONF_DESTINATION_LAT], entry.data[CONF_DESTINATION_LON])
         self._session = async_get_clientsession(hass)
-        self._semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
         refresh_hours = entry.options.get(CONF_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL_HOURS)
         super().__init__(
@@ -60,10 +59,9 @@ class TravelForecastCoordinator(DataUpdateCoordinator[list[ForecastPoint]]):
         return [start + timedelta(hours=i) for i in range(HORIZON_HOURS)]
 
     async def _fetch_one(self, timestamp: datetime) -> ForecastPoint:
-        async with self._semaphore:
-            prediction: RoutePrediction = await async_predict_travel_time(
-                self._session, self.origin, self.destination, timestamp, self.api_key
-            )
+        prediction: RoutePrediction = await async_predict_travel_time(
+            self._session, self.origin, self.destination, timestamp, self.api_key
+        )
         return ForecastPoint(
             timestamp=timestamp,
             duration_min=prediction.duration_min,
@@ -72,8 +70,12 @@ class TravelForecastCoordinator(DataUpdateCoordinator[list[ForecastPoint]]):
 
     async def _async_update_data(self) -> list[ForecastPoint]:
         timestamps = self._hourly_timestamps()
+        results: list[ForecastPoint] = []
         try:
-            results = await asyncio.gather(*(self._fetch_one(ts) for ts in timestamps))
+            for i, timestamp in enumerate(timestamps):
+                if i:
+                    await asyncio.sleep(REQUEST_DELAY_SECONDS)
+                results.append(await self._fetch_one(timestamp))
         except TomTomApiError as err:
             raise UpdateFailed(str(err)) from err
         return sorted(results, key=lambda point: point.timestamp)
