@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -37,7 +38,7 @@ class RoutePrediction:
 
 async def async_geocode(session: ClientSession, address: str, api_key: str) -> GeoPoint:
     """Resolve a free-text address to coordinates. Called once, at config time."""
-    url = TOMTOM_GEOCODE_URL.format(query=address)
+    url = TOMTOM_GEOCODE_URL.format(query=urllib.parse.quote(address))
     async with session.get(url, params={"key": api_key, "limit": 1}) as resp:
         if resp.status in (401, 403):
             raise TomTomAuthError(resp.status, await resp.text())
