@@ -1,0 +1,26 @@
+# Example Lovelace card for testing the Travel Forecast forecast curve.
+# Requires the "ApexCharts Card" custom card (install via HACS -> Frontend).
+# Adjust the entity id to match your own route's sensor.
+type: custom:apexcharts-card
+header:
+  show: true
+  title: Reistijd — hallacker
+graph_span: 48h
+span:
+  start: hour
+apex_config:
+  xaxis:
+    type: datetime
+    labels:
+      datetimeFormatter:
+        hour: "HH:mm"
+series:
+  - entity: sensor.hallacker_travel_time
+    name: Reistijd (min)
+    type: line
+    curve: smooth
+    color: "#ff9800"
+    data_generator: |
+      return entity.attributes.forecast.map((point) => {
+        return [new Date(point.time).getTime(), point.duration_min];
+      });
